@@ -77,6 +77,7 @@ RUN mkdir -p /home/model-server/
 
 # Copy the default custom service file to handle incoming data and inference requests
 COPY serving_src/model_handler.py /opt/ml/model/model_handler.py
+ADD serving_src/models /opt/ml/model/models
 
 # Define an entrypoint script for the docker image
 ENTRYPOINT ["python", "/usr/local/bin/dockerd-entrypoint.py"]

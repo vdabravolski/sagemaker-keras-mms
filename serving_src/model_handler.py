@@ -11,10 +11,10 @@ from sagemaker_inference import content_types, encoder
 
 import tensorflow as tf
 from tensorflow import keras
-# from tensorflow.keras import layers
-from tensorflow.keras.applications.vgg16 import VGG16, decode_predictions
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
+from tensorflow.keras.applications.vgg16 import decode_predictions
 import cv2
+
+from models.keras_model_loader import KerasModel
 
 IMAGE_SHAPE = (1, 224, 224, 3)
 
@@ -37,7 +37,7 @@ class ModelHandler(object):
         properties = context.system_properties
         model_dir = properties.get("model_dir") 
         
-        self.model = VGG16(weights='imagenet')
+        self.model = KerasModel.get_model("vgg16")
         print(self.model.summary())
        
 
@@ -52,11 +52,9 @@ class ModelHandler(object):
         nparr = np.frombuffer(payload, np.uint8)
         img_np = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         image = np.asarray(img_np)
-#         data = np.frombuffer(payload, dtype=np.float64)
         image = np.reshape(image, IMAGE_SHAPE)
         print(f"image type={type(image)}, shape={np.shape(image)}")
 
-#         data = data.reshape((data.size // NUM_FEATURES, NUM_FEATURES))
         return image
 
     def inference(self, model_input):
